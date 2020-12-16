@@ -8,7 +8,8 @@ LABEL build_version="Split of Linuxserver.io version: ${VERSION} Build-date: ${B
 LABEL maintainer="hydazz"
 
 # environment settings
-ARG RADARR_BRANCH="nightly"
+ARG RADARR_BRANCH
+ARG RADARR_VERSION
 ENV XDG_CONFIG_HOME="/config/xdg"
 
 RUN \
@@ -22,7 +23,6 @@ RUN \
   sqlite-libs && \
  echo "**** install radarr ****" && \
  mkdir -p /app/radarr/bin && \
- RADARR_RELEASE=$(curl -sL "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/changes?os=linuxmusl" | jq -r '.[0].version') && \
  curl -o \
  /tmp/radarr.tar.gz -L \
   "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${RADARR_RELEASE}&os=linuxmusl&runtime=netcore&arch=x64" && \
