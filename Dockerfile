@@ -8,7 +8,7 @@ LABEL maintainer="hydazz"
 
 # environment settings
 ARG RADARR_BRANCH
-ARG RADARR_VERSION
+ARG RADARR_RELEASE
 ENV XDG_CONFIG_HOME="/config/xdg"
 
 RUN \
