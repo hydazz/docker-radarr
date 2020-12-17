@@ -1,4 +1,4 @@
-FROM ghcr.io/linuxserver/baseimage-ubuntu:focal
+FROM vcxpz/baseimage-alpine
 
 # set version label
 ARG BUILD_DATE
