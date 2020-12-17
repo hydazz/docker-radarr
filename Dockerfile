@@ -15,16 +15,15 @@ RUN \
  echo "**** install packages ****" && \
  apk add --no-cache \
   curl \
-  icu-libs \
+	icu-libs \
   libintl \
-  libmediainfo \
+	libmediainfo \
   sqlite-libs && \
  echo "**** install radarr ****" && \
  mkdir -p /app/radarr/bin && \
- echo "downloading https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${RADARR_VERSION}&os=linuxmusl&runtime=netcore&arch=x64" && \
  curl -o \
  /tmp/radarr.tar.gz -L \
-  "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${RADARR_VERSION}&os=linuxmusl&runtime=netcore&arch=x64" && \
+  "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${RADARR_RELEASE}&os=linuxmusl&runtime=netcore&arch=x64" && \
  tar xzf \
  /tmp/radarr.tar.gz -C \
   /app/radarr/bin --strip-components=1 && \
