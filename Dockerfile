@@ -23,7 +23,7 @@ RUN \
  mkdir -p /app/radarr/bin && \
  curl -o \
  /tmp/radarr.tar.gz -L \
-  "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${RADARR_RELEASE}&os=linuxmusl&runtime=netcore&arch=x64" && \
+  "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${RADARR_VERSION}&os=linuxmusl&runtime=netcore&arch=x64" && \
  tar xzf \
  /tmp/radarr.tar.gz -C \
   /app/radarr/bin --strip-components=1 && \
