@@ -5,4 +5,4 @@ umask "$UMASK_SET"
 
 exec \
   s6-setuidgid abc /app/radarr/bin/Radarr \
-  -nobrowser -data=/config
+  -nobrowser -data=/config >/dev/null
