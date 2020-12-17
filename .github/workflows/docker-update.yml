@@ -40,7 +40,7 @@ jobs:
       env:
         RADARR_BRANCH: nightly
       run: |
-        RADARR_RELEASE="$(curl -sL "https://radarr.servarr.com/v1/update/$RADARR_BRANCH/changes?os=linuxmusl" | jq -r '.[0].version')"
+        RADARR_RELEASE=$(curl -sL "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/changes?os=linuxmusl" | jq -r '.[0].version')
         echo "::set-output name=RADARR_RELEASE::$RADARR_RELEASE"
         echo "::set-output name=RADARR_BRANCH::$RADARR_BRANCH"
 
@@ -53,8 +53,6 @@ jobs:
       env:
         VERSION: ${{ steps.variables.outputs.VERSION }}
         DOCKERHUB_IMAGE: ${{ steps.variables.outputs.DOCKERHUB_IMAGE }}
-        RADARR_BRANCH: ${{ steps.variables.radarr.RADARR_BRANCH }}
-        RADARR_RELEASE: ${{ steps.variables.radarr.RADARR_RELEASE }}
       run: |
         docker build --no-cache --pull . --file Dockerfile --build-arg RADARR_BRANCH="$RADARR_BRANCH" --build-arg RADARR_RELEASE="$RADARR_RELEASE" --build-arg VERSION="$VERSION" --build-arg BUILD_DATE="$(date +%Y-%m-%d)" --tag "$DOCKERHUB_IMAGE":cibuild
     - name: Compare package_versions.txt
@@ -63,7 +61,9 @@ jobs:
         GIT_USER: ${{ steps.variables.outputs.GIT_USER }}
         GIT_REPO: ${{ steps.variables.outputs.GIT_REPO }}
         GIT_BRANCH: ${{ steps.variables.outputs.GIT_BRANCH }}
-        DOCKERHUB_IMAGE: ${{ steps.variables.outputs.DOCKERHUB_IMAGE}}
+        DOCKERHUB_IMAGE: ${{ steps.variables.outputs.DOCKERHUB_IMAGE }}
+        RADARR_RELEASE: ${{ steps.radarr.outputs.RADARR_RELEASE }}
+        RADARR_BRANCH: ${{ steps.radarr.outputs.RADARR_BRANCH }}
       run: |
         mkdir /tmp/workdir
         docker run --rm --entrypoint '/bin/sh' -v /tmp/workdir:/tmp "$DOCKERHUB_IMAGE":cibuild -c '\
