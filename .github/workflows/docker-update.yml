@@ -2,7 +2,7 @@ name: Docker Update CI
 
 on:
   schedule:
-    - cron:  '10 0 * * 0'
+    - cron:  '5 0 * * 0'
   workflow_dispatch:
   push:
     branches:
@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
 
@@ -26,23 +26,15 @@ jobs:
         GIT_BRANCH: main
         DOCKERHUB_IMAGE: vcxpz/radarr
         DOCKERIMAGE_TAG: latest
+        RADARR_BRANCH: nightly
       run: |
         echo "::set-output name=GIT_USER::$GIT_USER"
         echo "::set-output name=GIT_REPO::$GIT_REPO"
         echo "::set-output name=GIT_BRANCH::$GIT_BRANCH"
         echo "::set-output name=DOCKERHUB_IMAGE::$DOCKERHUB_IMAGE"
         echo "::set-output name=DOCKERIMAGE_TAG::$DOCKERIMAGE_TAG"
-        echo "::set-output name=DOCKERIMAGE_TAG::$DOCKERIMAGE_TAG"
-        VERSION="$(curl --silent "https://api.github.com/repos/linuxserver/$GIT_REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')"
-        echo "::set-output name=VERSION::$VERSION"
-
-    - name: Set Radarr Variables
-      id: radarr
-      env:
-        RADARR_BRANCH: nightly
-      run: |
-        RADARR_RELEASE=$(curl -sL "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/changes?os=linuxmusl" | jq -r '.[0].version')
-        echo "::set-output name=RADARR_RELEASE::$RADARR_RELEASE"
+        echo "::set-output name=VERSION::$(curl --silent "https://api.github.com/repos/linuxserver/$GIT_REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')"
+        echo "::set-output name=RADARR_RELEASE::$(curl -sL "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/changes?os=linuxmusl" | jq -r '.[0].version')"
         echo "::set-output name=RADARR_BRANCH::$RADARR_BRANCH"
 
     - name: Docker Login
@@ -50,16 +42,17 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
         echo $DOCKER_PASSWORD | docker login -u vcxpz --password-stdin
+
     - name: Build the Docker image
       env:
         VERSION: ${{ steps.variables.outputs.VERSION }}
         DOCKERHUB_IMAGE: ${{ steps.variables.outputs.DOCKERHUB_IMAGE }}
-        RADARR_RELEASE: ${{ steps.radarr.outputs.RADARR_RELEASE }}
-        RADARR_BRANCH: ${{ steps.radarr.outputs.RADARR_BRANCH }}
+        RADARR_RELEASE: ${{ steps.variables.outputs.RADARR_RELEASE }}
+        RADARR_BRANCH: ${{ steps.variables.outputs.RADARR_BRANCH }}
       run: |
         docker build --no-cache --pull . --file Dockerfile --build-arg RADARR_BRANCH="$RADARR_BRANCH" --build-arg RADARR_RELEASE="$RADARR_RELEASE" --build-arg VERSION="$VERSION" --build-arg BUILD_DATE="$(date +%Y-%m-%d)" --tag "$DOCKERHUB_IMAGE":cibuild
-    - name: Compare package_versions.txt
-      id: packages
+
+    - name: Get The Goods From The Image
       env:
         GIT_USER: ${{ steps.variables.outputs.GIT_USER }}
         GIT_REPO: ${{ steps.variables.outputs.GIT_REPO }}
@@ -68,20 +61,21 @@ jobs:
       run: |
         mkdir /tmp/workdir
         docker run --rm --entrypoint '/bin/sh' -v /tmp/workdir:/tmp "$DOCKERHUB_IMAGE":cibuild -c '\
-            apk info -v > /tmp/package_versions.txt && \
-            sort -o /tmp/package_versions.txt /tmp/package_versions.txt && \
-            chmod 777 /tmp/package_versions.txt'
+            apk info -v | sort >/tmp/package_versions.txt'
         git clone -b $GIT_BRANCH https://github.com/"$GIT_USER"/"$GIT_REPO".git /tmp/workdir/"$GIT_REPO"
         cd /tmp/workdir/"$GIT_REPO"
         if [ ! -f package_versions.txt ]; then \
           touch package_versions.txt; \
         fi
-        OLD="$(md5sum package_versions.txt | awk '{ print $1 }')"
-        echo "::set-output name=OLD::$OLD"
-        NEW="$(md5sum /tmp/workdir/package_versions.txt | awk '{ print $1 }')"
-        echo "::set-output name=NEW::$NEW"
-    - name: Push New packaage_versions.txt
-      if: steps.packages.outputs.NEW != steps.packages.outputs.OLD
+
+    - name: Set MD5 Variables
+      id: md5
+      run: |
+        echo "::set-output name=PACKAGES_OLD_MD5::$(md5sum package_versions.txt | awk '{ print $1 }')"
+        echo "::set-output name=PACKAGES_NEW_MD5::$(md5sum /tmp/workdir/package_versions.txt | awk '{ print $1 }')"
+
+    - name: Push Changes To Github
+      if: steps.md5.outputs.PACKAGES_NEW_MD5 != steps.md5.outputs.PACKAGES_NEW_MD5
       env:
         GIT_USER: ${{ steps.variables.outputs.GIT_USER }}
         GIT_REPO: ${{ steps.variables.outputs.GIT_REPO }}
@@ -96,6 +90,7 @@ jobs:
         git add package_versions.txt
         git commit -m 'Bot Updating Package Versions'
         git push https://"$GIT_USER":"$GIT_KEY"@github.com/"$GIT_USER"/"$GIT_REPO".git $GIT_BRANCH
+
     - name: Tag And Push Docker Image
       env:
         DOCKERHUB_IMAGE: ${{ steps.variables.outputs.DOCKERHUB_IMAGE }}
@@ -103,10 +98,3 @@ jobs:
       run: |
         docker tag "$DOCKERHUB_IMAGE":cibuild "$DOCKERHUB_IMAGE":"$DOCKERIMAGE_TAG"
         docker push "$DOCKERHUB_IMAGE":"$DOCKERIMAGE_TAG"
-    - name: Cleanup
-      env:
-        DOCKERHUB_IMAGE: ${{ steps.variables.outputs.DOCKERHUB_IMAGE }}
-        DOCKERIMAGE_TAG: ${{ steps.variables.outputs.DOCKERIMAGE_TAG }}
-      run: |
-        docker image rm -f "$DOCKERHUB_IMAGE":"$DOCKERIMAGE_TAG"
-        rm -rf /tmp/workdir
