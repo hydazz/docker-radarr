@@ -35,6 +35,7 @@ jobs:
         echo "::set-output name=DOCKERIMAGE_TAG::$DOCKERIMAGE_TAG"
         VERSION="$(curl --silent "https://api.github.com/repos/linuxserver/$GIT_REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')"
         echo "::set-output name=VERSION::$VERSION"
+
     - name: Set Radarr Variables
       id: radarr
       env:
