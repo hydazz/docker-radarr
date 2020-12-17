@@ -21,6 +21,7 @@ RUN \
   sqlite-libs && \
  echo "**** install radarr ****" && \
  mkdir -p /app/radarr/bin && \
+ echo "downloading https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${RADARR_VERSION}&os=linuxmusl&runtime=netcore&arch=x64"
  curl -o \
  /tmp/radarr.tar.gz -L \
   "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${RADARR_VERSION}&os=linuxmusl&runtime=netcore&arch=x64" && \
