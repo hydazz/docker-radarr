@@ -12,6 +12,13 @@ ARG RADARR_VERSION
 ENV XDG_CONFIG_HOME="/config/xdg"
 
 RUN \
+ echo "**** install packages ****" && \
+ apk add --no-cache \
+  curl \
+  icu-libs \
+  libintl \
+  libmediainfo \
+  sqlite-libs && \
  echo "**** install radarr ****" && \
  mkdir -p /app/radarr/bin && \
  curl -o \
