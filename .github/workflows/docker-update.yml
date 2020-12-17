@@ -34,6 +34,7 @@ jobs:
         echo "::set-output name=DOCKERIMAGE_TAG::$DOCKERIMAGE_TAG"
         echo "::set-output name=DOCKERIMAGE_TAG::$DOCKERIMAGE_TAG"
         VERSION="$(curl --silent "https://api.github.com/repos/linuxserver/$GIT_REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')"
+<<<<<<< Updated upstream
         echo "::set-output name=VERSION::$VERSION"
 
     - name: Set Radarr Variables
@@ -45,6 +46,11 @@ jobs:
         echo "::set-output name=RADARR_RELEASE::$RADARR_RELEASE"
         echo "::set-output name=RADARR_BRANCH::$RADARR_BRANCH"
         
+=======
+        RADARR_VERSION="$(curl -sL "https://radarr.servarr.com/v1/update/$RADARR_BRANCH/changes?os=linuxmusl" | jq -r '.[0].version')"
+        echo "::set-output name=VERSION::$VERSION"
+        echo "::set-output name=RADARR_VERSION::$RADARR_VERSION"
+>>>>>>> Stashed changes
     - name: Docker Login
       env:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -55,10 +61,15 @@ jobs:
       env:
         VERSION: ${{ steps.variables.outputs.VERSION }}
         DOCKERHUB_IMAGE: ${{ steps.variables.outputs.DOCKERHUB_IMAGE }}
+<<<<<<< Updated upstream
         RADARR_BRANCH: ${{ steps.variables.radarr.RADARR_BRANCH }}
         RADARR_RELEASE: ${{ steps.variables.radarr.RADARR_RELEASE }}
+=======
+        RADARR_BRANCH: ${{ steps.variables.outputs.RADARR_BRANCH }}
+        RADARR_VERSION: ${{ steps.variables.outputs.RADARR_VERSION }}
+>>>>>>> Stashed changes
       run: |
-        docker build --no-cache --pull . --file Dockerfile --build-arg RADARR_BRANCH="$RADARR_BRANCH" --build-arg RADARR_RELEASE="$RADARR_RELEASE" --build-arg VERSION="$VERSION" --build-arg BUILD_DATE="$(date +%Y-%m-%d)" --tag "$DOCKERHUB_IMAGE":cibuild
+        docker build --no-cache --pull . --file Dockerfile --build-arg RADARR_BRANCH="$RADARR_BRANCH" --build-arg RADARR_VERSION="$RADARR_VERSION" --build-arg VERSION="$VERSION" --build-arg BUILD_DATE="$(date +%Y-%m-%d)" --tag "$DOCKERHUB_IMAGE":cibuild
 
     - name: Compare package_versions.txt
       id: packages

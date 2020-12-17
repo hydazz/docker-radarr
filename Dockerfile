@@ -3,7 +3,6 @@ FROM vcxpz/baseimage-alpine
 # set version label
 ARG BUILD_DATE
 ARG VERSION
-ARG RADARR_RELEASE
 LABEL build_version="Split of Linuxserver.io version: ${VERSION} Build-date: ${BUILD_DATE}"
 LABEL maintainer="hydazz"
 
@@ -13,13 +12,6 @@ ARG RADARR_VERSION
 ENV XDG_CONFIG_HOME="/config/xdg"
 
 RUN \
- echo "**** install packages ****" && \
- apk add --no-cache \
-  curl \
-	icu-libs \
-  libintl \
-	libmediainfo \
-  sqlite-libs && \
  echo "**** install radarr ****" && \
  mkdir -p /app/radarr/bin && \
  curl -o \

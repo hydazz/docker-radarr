@@ -3,4 +3,6 @@
 UMASK_SET=${UMASK_SET:-022}
 umask "$UMASK_SET"
 
-exec s6-setuidgid abc /app/radarr/bin/Radarr -nobrowser -data=/config >/dev/null
+cd /app/radarr/bin || exit
+
+exec s6-setuidgid abc ./Radarr -nobrowser -data=/config >/dev/null
