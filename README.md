@@ -1,4 +1,4 @@
-## Alpine Edge split of [linuxserver/docker-radarr](https://github.com/linuxserver/docker-radarr/)
+## Alpine Edge fork of [linuxserver/docker-radarr](https://github.com/linuxserver/docker-radarr/)
 
 [Radarr](https://radarr.video/) - A fork of Sonarr to work with movies à la Couchpotato.
 
