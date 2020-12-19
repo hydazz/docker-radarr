@@ -60,6 +60,7 @@ jobs:
         docker run --rm --entrypoint '/bin/sh' -v "$PWD":/tmp "$DOCKERHUB_IMAGE":cibuild -c '\
           apk info -v | sort >/tmp/package_versions.txt'
         echo "::set-output name=NEW_MD5::$(md5sum package_versions.txt | awk '{ print $1 }')"
+        echo "::set-output name=OLD_RADARR_RELEASE::$(cat version_info.json | jq -r .radarr_release)"
 
     - name: Update README.md
       id: readme
@@ -113,7 +114,7 @@ jobs:
         repository: ${{ steps.variables.outputs.DOCKERHUB_IMAGE }}
 
     - name: Tag And Push Docker Image
-      if: steps.push_packageversions.outputs.COMMIT == 1
+      if: steps.packages.outputs.OLD_RADARR_RELEASE == steps.variables.outputs.RADARR_RELEASE
       env:
         DOCKERHUB_IMAGE: ${{ steps.variables.outputs.DOCKERHUB_IMAGE }}
         DOCKERIMAGE_TAG: ${{ steps.variables.outputs.DOCKERIMAGE_TAG }}
