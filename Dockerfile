@@ -27,7 +27,7 @@ RUN \
  tar xzf \
  /tmp/radarr.tar.gz -C \
 	/app/radarr/bin --strip-components=1 && \
- printf "UpdateMethod=docker\nBranch=${RADARR_BRANCH}\nPackageVersion=${VERSION}\nPackageAuthor=linuxserver.io" > /app/radarr/package_info && \
+ printf "UpdateMethod=docker\nBranch=${RADARR_BRANCH}\n" > /app/radarr/package_info && \
  echo "**** cleanup ****" && \
  rm -rf \
 	/app/radarr/bin/Radarr.Update \
