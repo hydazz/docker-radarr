@@ -21,6 +21,8 @@ docker run -d \
   --restart unless-stopped \
   vcxpz/radarr
 ```
+## Credits
+* [spritsail/radarr](https://github.com/spritsail/radarr) for the `HEALTHCHECK` command
 
 ## Todo
 * Nothing, everything works 🙂

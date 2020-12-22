@@ -18,7 +18,8 @@ RUN \
       icu-libs \
       libintl \
       libmediainfo \
-      sqlite-libs && \
+      sqlite-libs \
+      xmlstarlet && \
    echo "**** install radarr ****" && \
    mkdir -p /app/radarr/bin && \
    curl -o \
@@ -31,13 +32,14 @@ RUN \
    echo "**** cleanup ****" && \
    rm -rf \
       /app/radarr/bin/Radarr.Update \
-      /app/radarr/bin/UI/Content/_output \
-      /tmp/* && \
-   find /app/radarr/bin/UI -name '*.map' -delete && \
-   find /app/radarr/bin/ -name '*.mdb' -delete
+      /tmp/*
 
 # copy local files
 COPY root/ /
+
+HEALTHCHECK --start-period=10s --timeout=5s \
+   CMD wget -qO /dev/null 'http://localhost:7878/api/system/status' \
+      --header "x-api-key: $(xmlstarlet sel -t -v '/Config/ApiKey' /config/config.xml)"
 
 # ports and volumes
 EXPOSE 7878
