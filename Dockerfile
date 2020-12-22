@@ -2,12 +2,11 @@ FROM vcxpz/baseimage-alpine
 
 # set version label
 ARG BUILD_DATE
-ARG VERSION
-LABEL build_version="Fork of Linuxserver.io version:- ${VERSION} Build-date:- ${BUILD_DATE}"
+ARG RADARR_RELEASE
+LABEL build_version="Radarr version:- ${RADARR_RELEASE} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="Alex Hyde"
 
 # environment settings
-ARG RADARR_RELEASE
 ARG RADARR_BRANCH
 ENV XDG_CONFIG_HOME="/config/xdg"
 
