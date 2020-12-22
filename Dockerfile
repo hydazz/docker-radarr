@@ -12,26 +12,29 @@ ARG RADARR_BRANCH
 ENV XDG_CONFIG_HOME="/config/xdg"
 
 RUN \
- echo "**** install runtime packages ****" && \
- apk add --no-cache \
- 	curl \
- 	icu-libs \
- 	libintl \
- 	libmediainfo \
- 	sqlite-libs && \
- echo "**** install radarr ****" && \
- mkdir -p /app/radarr/bin && \
- curl -o \
- /tmp/radarr.tar.gz -L \
-	"https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${RADARR_RELEASE}&os=linuxmusl&runtime=netcore&arch=x64" && \
- tar xzf \
- /tmp/radarr.tar.gz -C \
-	/app/radarr/bin --strip-components=1 && \
- printf "UpdateMethod=docker\nBranch=${RADARR_BRANCH}\n" > /app/radarr/package_info && \
- echo "**** cleanup ****" && \
- rm -rf \
-	/app/radarr/bin/Radarr.Update \
-	/tmp/*
+   echo "**** install runtime packages ****" && \
+   apk add --no-cache \
+      curl \
+      icu-libs \
+      libintl \
+      libmediainfo \
+      sqlite-libs && \
+   echo "**** install radarr ****" && \
+   mkdir -p /app/radarr/bin && \
+   curl -o \
+   /tmp/radarr.tar.gz -L \
+      "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${RADARR_RELEASE}&os=linuxmusl&runtime=netcore&arch=x64" && \
+   tar xzf \
+   /tmp/radarr.tar.gz -C \
+      /app/radarr/bin --strip-components=1 && \
+   printf "UpdateMethod=docker\nBranch=${RADARR_BRANCH}\n" > /app/radarr/package_info && \
+   echo "**** cleanup ****" && \
+   rm -rf \
+      /app/radarr/bin/Radarr.Update \
+      /app/radarr/bin/UI/Content/_output \
+      /tmp/* && \
+   find /app/radarr/bin/UI -name '*.map' -delete && \
+   find /app/radarr/bin/ -name '*.mdb' -delete
 
 # copy local files
 COPY root/ /
