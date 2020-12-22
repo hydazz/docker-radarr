@@ -37,6 +37,7 @@ RUN \
 # copy local files
 COPY root/ /
 
+# radarr healthcheck
 HEALTHCHECK --start-period=10s --timeout=5s \
    CMD wget -qO /dev/null 'http://localhost:7878/api/system/status' \
       --header "x-api-key: $(xmlstarlet sel -t -v '/Config/ApiKey' /config/config.xml)"

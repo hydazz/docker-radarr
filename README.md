@@ -14,6 +14,7 @@ docker run -d \
   -e PGID=1000 \
   -e TZ=Australia/Melbourne \
   -e UMASK_SET=022 `#optional` \
+  -e DEBUG=true/false `#optional` \
   -p 7878:7878 \
   -v <path to appdata>:/config \
   -v <path to movies>:/movies \
@@ -23,6 +24,7 @@ docker run -d \
 ```
 ## Credits
 * [spritsail/radarr](https://github.com/spritsail/radarr) for the `HEALTHCHECK` command
+* [hotio](https://github.com/hotio) for the `redirect_cmd` function
 
 ## Todo
 * Nothing, everything works 🙂
