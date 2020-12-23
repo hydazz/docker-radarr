@@ -79,7 +79,13 @@ jobs:
           -e "s/${OLD_OVERLAY_VERSION}/${OVERLAY_VERSION}/g" \
           -e "s/${OLD_RADARR_RELEASE}/${RADARR_RELEASE}/g" \
           README.md
-        printf '{\n"overlay_version": "'${OVERLAY_VERSION}'",\n"radarr_release": "'${RADARR_RELEASE}'"\n}' >version_info.json
+        NEW_VERSION_INFO="overlay_version|radarr_release
+        ${OVERLAY_VERSION}|${RADARR_RELEASE}"
+        jq -Rn '
+        ( input  | split("|") ) as $keys |
+        ( inputs | split("|") ) as $vals |
+        [[$keys, $vals] | transpose[] | {key:.[0],value:.[1]}] | from_entries
+        ' <<<"$NEW_VERSION_INFO" >version_info.json
         echo "::set-output name=NEW_MD5::$(md5sum README.md | awk '{ print $1 }')"
 
     - name: Commit And Push Changes To Github
