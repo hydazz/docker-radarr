@@ -5,11 +5,9 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - '**/README.md'
-      - '**/package_versions.txt'
-      - '**/version_info.json'
-      - '.github/**'
+    paths:
+      - '**/Dockerfile'
+      - 'root/**'
 
 jobs:
   amd64:
