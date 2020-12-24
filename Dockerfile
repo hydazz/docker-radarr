@@ -11,9 +11,11 @@ ARG RADARR_BRANCH
 ENV XDG_CONFIG_HOME="/config/xdg"
 
 RUN \
+   echo "**** install build packages ****" && \
+   apk add --no-cache --virtual=build-dependencies \
+      curl && \
    echo "**** install runtime packages ****" && \
    apk add --no-cache \
-      curl \
       icu-libs \
       libintl \
       libmediainfo \
@@ -29,6 +31,8 @@ RUN \
       /app/radarr/bin --strip-components=1 && \
    printf "UpdateMethod=docker\nBranch=${RADARR_BRANCH}\n" > /app/radarr/package_info && \
    echo "**** cleanup ****" && \
+   apk del --purge \
+      build-dependencies && \
    rm -rf \
       /app/radarr/bin/Radarr.Update \
       /tmp/*
