@@ -7,7 +7,6 @@ busybox-1.32.0-r8
 ca-certificates-20191127-r5
 ca-certificates-bundle-20191127-r5
 coreutils-8.32-r1
-curl-7.74.0-r0
 icu-libs-67.1-r1
 libacl-2.2.53-r0
 libattr-2.4.48-r0
