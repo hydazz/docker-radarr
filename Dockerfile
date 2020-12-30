@@ -24,10 +24,10 @@ RUN \
    echo "**** install radarr ****" && \
    mkdir -p /app/radarr/bin && \
    curl -o \
-   /tmp/radarr.tar.gz -L \
+      /tmp/radarr.tar.gz -L \
       "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${RADARR_RELEASE}&os=linuxmusl&runtime=netcore&arch=x64" && \
    tar xzf \
-   /tmp/radarr.tar.gz -C \
+      /tmp/radarr.tar.gz -C \
       /app/radarr/bin --strip-components=1 && \
    printf "UpdateMethod=docker\nBranch=${RADARR_BRANCH}\n" > /app/radarr/package_info && \
    echo "**** cleanup ****" && \
