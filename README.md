@@ -22,6 +22,8 @@ docker run -d \
   --restart unless-stopped \
   vcxpz/radarr
 ```
+On Unraid? There's a [template](https://github.com/hydazz/docker-templates/blob/main/hydaz/radarr.xml)
+
 ## Credits
 * [spritsail/radarr](https://github.com/spritsail/radarr) for the `HEALTHCHECK` command
 * [hotio](https://github.com/hotio) for the `redirect_cmd` function
