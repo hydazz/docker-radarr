@@ -23,7 +23,7 @@ jobs:
           echo "DOCKERHUB_IMAGE=${DOCKERHUB_IMAGE}" >>$GITHUB_ENV
           echo "DOCKERHUB_USER=${DOCKERHUB_USER}" >>$GITHUB_ENV
           echo "DOCKERIMAGE_TAG=${DOCKERIMAGE_TAG}" >>$GITHUB_ENV
-          echo "::set-output name=VERSION::$(curl -sX GET "https://api.github.com/repos/hydazz/docker-${DOCKERHUB_IMAGE}/releases/latest" | jq -r .tag_name)-dev"
+          echo "::set-output name=VERSION::$(curl -sX GET "https://api.github.com/repos/hydazz/docker-${DOCKERHUB_IMAGE}/releases/latest" | jq -r .tag_name)"
           echo "RADARR_BRANCH=${RADARR_BRANCH}" >>$GITHUB_ENV
           echo "::set-output name=USER_IMAGE::${DOCKERHUB_USER}/${DOCKERHUB_IMAGE}"
 
@@ -66,5 +66,4 @@ jobs:
           VERSION: ${{ steps.variables.outputs.VERSION }}
         run: |
           docker tag ${DOCKERHUB_USER}/${DOCKERHUB_IMAGE}:cibuild ${DOCKERHUB_USER}/${DOCKERHUB_IMAGE}:${DOCKERIMAGE_TAG}
-          docker tag ${DOCKERHUB_USER}/${DOCKERHUB_IMAGE}:cibuild ${DOCKERHUB_USER}/${DOCKERHUB_IMAGE}:${VERSION}
           docker push ${DOCKERHUB_USER}/${DOCKERHUB_IMAGE}:${DOCKERIMAGE_TAG}
