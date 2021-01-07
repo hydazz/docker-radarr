@@ -2,8 +2,8 @@ FROM vcxpz/baseimage-alpine
 
 # set version label
 ARG BUILD_DATE
-ARG RADARR_RELEASE
-LABEL build_version="Radarr version:- ${RADARR_RELEASE} Build-date:- ${BUILD_DATE}"
+ARG VERSION
+LABEL build_version="Radarr version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="Alex Hyde"
 
 # environment settings
@@ -25,7 +25,7 @@ RUN \
    mkdir -p /app/radarr/bin && \
    curl -o \
       /tmp/radarr.tar.gz -L \
-      "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${RADARR_RELEASE}&os=linuxmusl&runtime=netcore&arch=x64" && \
+      "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${VERSION}&os=linuxmusl&runtime=netcore&arch=x64" && \
    tar xzf \
       /tmp/radarr.tar.gz -C \
       /app/radarr/bin --strip-components=1 && \
