@@ -2,11 +2,9 @@ name: Auto Builder CI
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "5 0 * * 0" # L2 image
-  release:
-    types:
-      - released
+  push:
+    branches:
+      - dev
 
 jobs:
   latest:
@@ -19,13 +17,13 @@ jobs:
         env:
           DOCKERHUB_USER: vcxpz
           DOCKERHUB_IMAGE: radarr
-          DOCKERIMAGE_TAG: latest
+          DOCKERIMAGE_TAG: dev
           RADARR_BRANCH: nightly
         run: |
           echo "DOCKERHUB_IMAGE=${DOCKERHUB_IMAGE}" >>$GITHUB_ENV
           echo "DOCKERHUB_USER=${DOCKERHUB_USER}" >>$GITHUB_ENV
           echo "DOCKERIMAGE_TAG=${DOCKERIMAGE_TAG}" >>$GITHUB_ENV
-          echo "::set-output name=VERSION::$(curl -sX GET "https://api.github.com/repos/hydazz/docker-${DOCKERHUB_IMAGE}/releases/latest" | jq -r .tag_name)"
+          echo "::set-output name=VERSION::$(curl -sX GET "https://api.github.com/repos/hydazz/docker-${DOCKERHUB_IMAGE}/releases/latest" | jq -r .tag_name)-dev"
           echo "RADARR_BRANCH=${RADARR_BRANCH}" >>$GITHUB_ENV
           echo "::set-output name=USER_IMAGE::${DOCKERHUB_USER}/${DOCKERHUB_IMAGE}"
 
@@ -70,11 +68,3 @@ jobs:
           docker tag ${DOCKERHUB_USER}/${DOCKERHUB_IMAGE}:cibuild ${DOCKERHUB_USER}/${DOCKERHUB_IMAGE}:${DOCKERIMAGE_TAG}
           docker tag ${DOCKERHUB_USER}/${DOCKERHUB_IMAGE}:cibuild ${DOCKERHUB_USER}/${DOCKERHUB_IMAGE}:${VERSION}
           docker push ${DOCKERHUB_USER}/${DOCKERHUB_IMAGE}:${DOCKERIMAGE_TAG}
-          docker push ${DOCKERHUB_USER}/${DOCKERHUB_IMAGE}:${VERSION}
-
-      - name: Push README.md To Docker Hub
-        uses: peter-evans/dockerhub-description@v2
-        with:
-          username: vcxpz
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ${{ steps.variables.outputs.USER_IMAGE }}
