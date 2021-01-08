@@ -2,12 +2,11 @@ name: Auto Builder CI
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - dev
-    paths:
-      - "**/Dockerfile"
-      - "root/**"
+  schedule:
+    - cron: "5 0 * * 0" # L2 image
+  release:
+    types:
+      - released
 
 jobs:
   latest:
@@ -20,7 +19,7 @@ jobs:
         env:
           DOCKERHUB_USER: vcxpz
           DOCKERHUB_IMAGE: radarr
-          DOCKERIMAGE_TAG: dev
+          DOCKERIMAGE_TAG: latest
           RADARR_BRANCH: nightly
         run: |
           echo "DOCKERHUB_IMAGE=${DOCKERHUB_IMAGE}" >>$GITHUB_ENV
