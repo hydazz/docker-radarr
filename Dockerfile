@@ -10,7 +10,7 @@ LABEL maintainer="hydaz"
 ARG RADARR_BRANCH
 ENV XDG_CONFIG_HOME="/config/xdg"
 
-RUN \
+RUN set -x && \
    echo "**** install build packages ****" && \
    apk add --no-cache --virtual=build-dependencies \
       curl && \
