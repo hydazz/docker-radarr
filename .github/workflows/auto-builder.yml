@@ -56,7 +56,7 @@ jobs:
           docker run --rm --entrypoint '/bin/sh' -v "$PWD":/tmp ${DOCKERHUB_USER}/${DOCKERHUB_IMAGE}:cibuild -c '\
             apk info -v | sort >/tmp/package_versions.txt'
 
-      - name: Update README.md
+      - name: Update README
         env:
           RADARR_RELEASE: ${{ steps.variables.outputs.VERSION }}
         run: |
