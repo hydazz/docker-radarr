@@ -11,6 +11,7 @@ redirect_cmd() {
 	fi
 }
 
+echo "Starting Radarr."
 redirect_cmd exec s6-setuidgid abc \
 	/app/radarr/bin/Radarr \
 	-nobrowser \
