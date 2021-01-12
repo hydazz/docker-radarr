@@ -16,10 +16,10 @@ RUN set -xe && \
       curl && \
    echo "**** install radarr ****" && \
    mkdir -p /app/radarr/bin && \
-   curl -sSL https://raw.githubusercontent.com/hydazz/scripts/main/docker/archer.sh | bash && \
+   ARCH=$(curl -sSL https://raw.githubusercontent.com/hydazz/scripts/main/docker/archer.sh | bash) && \
    curl -o \
       /tmp/radarr.tar.gz -L \
-      "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${RADARR_RELEASE}&os=linuxmusl&runtime=netcore&arch=${IMGARCH}" && \
+      "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${RADARR_RELEASE}&os=linuxmusl&runtime=netcore&arch=${ARCH}" && \
    tar xzf \
       /tmp/radarr.tar.gz -C \
       /app/radarr/bin --strip-components=1 && \
