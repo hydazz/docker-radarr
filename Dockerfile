@@ -2,12 +2,12 @@ FROM vcxpz/baseimage-alpine-arr:latest
 
 # set version label
 ARG BUILD_DATE
-ARG RADARR_RELEASE
-LABEL build_version="Radarr version:- ${RADARR_RELEASE} Build-date:- ${BUILD_DATE}"
+ARG VERSION
+LABEL build_version="Radarr version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="hydaz"
 
 # environment settings
-ARG RADARR_BRANCH
+ARG BRANCH
 ENV XDG_CONFIG_HOME="/config/xdg"
 
 RUN set -xe && \
@@ -19,11 +19,11 @@ RUN set -xe && \
    ARCH=$(curl -sSL https://raw.githubusercontent.com/hydazz/scripts/main/docker/archer.sh | bash) && \
    curl --silent -o \
       /tmp/radarr.tar.gz -L \
-      "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${RADARR_RELEASE}&os=linuxmusl&runtime=netcore&arch=${ARCH}" && \
+      "https://radarr.servarr.com/v1/update/${BRANCH}/updatefile?version=${VERSION}&os=linuxmusl&runtime=netcore&arch=${ARCH}" && \
    tar xzf \
       /tmp/radarr.tar.gz -C \
       /app/radarr/bin --strip-components=1 && \
-   printf "UpdateMethod=docker\nBranch=${RADARR_BRANCH}\n" > /app/radarr/package_info && \
+   printf "UpdateMethod=docker\nBranch=${BRANCH}\n" > /app/radarr/package_info && \
    echo "**** cleanup ****" && \
    apk del --purge \
       build-dependencies && \
