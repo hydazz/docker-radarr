@@ -17,7 +17,7 @@ RUN \
      curl && \
    echo "**** install radarr ****" && \
    mkdir -p /app/radarr/bin && \
-   ARCH=$(curl -sSL https://raw.githubusercontent.com/hydazz/scripts/main/docker/archer.sh | bash) && \
+   ARCH=$(curl -sSL https://raw.githubusercontent.com/hydazz/docker-utils/main/docker/archer.sh | bash) && \
    curl --silent -o \
      /tmp/radarr.tar.gz -L \
      "https://radarr.servarr.com/v1/update/${BRANCH}/updatefile?version=${VERSION}&os=linuxmusl&runtime=netcore&arch=${ARCH}" && \
