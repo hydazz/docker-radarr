@@ -13,7 +13,6 @@ Fork of [linuxserver/docker-radarr](https://github.com/linuxserver/docker-radarr
       -e PUID=1000 \
       -e PGID=1000 \
       -e TZ=Australia/Melbourne \
-      -e UMASK_SET=022 `#optional` \
       -e DEBUG=true/false `#optional` \
       -p 7878:7878 \
       -v <path to appdata>:/config \
