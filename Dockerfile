@@ -1,5 +1,4 @@
-ARG TAG
-FROM vcxpz/baseimage-alpine-arr:${TAG}
+FROM vcxpz/baseimage-alpine:latest
 
 # set version label
 ARG BUILD_DATE
@@ -15,6 +14,9 @@ RUN \
 	apk add --no-cache --virtual=build-dependencies \
 		curl && \
 	echo "**** install radarr ****" && \
+	if [ -z ${VERSION+x} ]; then \
+		VERSION=$(curl -sL "https://radarr.servarr.com/v1/update/nightly/changes?os=linuxmusl" | jq -r ".[0].version"); \
+	fi && \
 	mkdir -p /app/radarr/bin && \
 	ARCH=$(curl -sSL https://raw.githubusercontent.com/hydazz/docker-utils/main/docker/archer.sh | bash) && \
 	curl --silent -o \
