@@ -12,10 +12,11 @@ ARG BRANCH
 RUN \
 	echo "**** install build packages ****" && \
 	apk add --no-cache --virtual=build-dependencies \
-		curl && \
+		curl \
+		jq && \
 	echo "**** install radarr ****" && \
 	if [ -z ${VERSION+x} ]; then \
-		VERSION=$(curl -sL "https://radarr.servarr.com/v1/update/nightly/changes?os=linuxmusl" | jq -r ".[0].version"); \
+		VERSION=$(curl -sL "https://radarr.servarr.com/v1/update/${BRANCH}/changes?os=linuxmusl" | jq -r '.[0].version'); \
 	fi && \
 	mkdir -p /app/radarr/bin && \
 	ARCH=$(curl -sSL https://raw.githubusercontent.com/hydazz/docker-utils/main/docker/archer.sh | bash) && \
