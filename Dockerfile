@@ -14,12 +14,16 @@ RUN \
 	apk add --no-cache --virtual=build-dependencies \
 		curl \
 		jq && \
+	if [ "$(arch)" = "x86_64" ]; then \
+		ARCH="x64"; \
+	elif [ "$(arch)" == "aarch64" ]; then \
+		ARCH="arm64"; \
+	fi && \
 	echo "**** install radarr ****" && \
 	if [ -z ${VERSION+x} ]; then \
 		VERSION=$(curl -sL "https://radarr.servarr.com/v1/update/${BRANCH}/changes?os=linuxmusl" | jq -r '.[0].version'); \
 	fi && \
 	mkdir -p /app/radarr/bin && \
-	ARCH=$(curl -sSL https://raw.githubusercontent.com/hydazz/docker-utils/main/docker/archer.sh | bash) && \
 	curl --silent -o \
 		/tmp/radarr.tar.gz -L \
 		"https://radarr.servarr.com/v1/update/${BRANCH}/updatefile?version=${VERSION}&os=linuxmusl&runtime=netcore&arch=${ARCH}" && \
