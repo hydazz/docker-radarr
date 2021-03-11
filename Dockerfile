@@ -16,8 +16,10 @@ RUN \
 		jq && \
 	if [ "$(arch)" = "x86_64" ]; then \
 		ARCH="x64"; \
-	elif [ "$(arch)" == "aarch64" ]; then \
+	elif [ "$(arch)" = "aarch64" ]; then \
 		ARCH="arm64"; \
+	else \
+		exit 1; \
 	fi && \
 	echo "**** install radarr ****" && \
 	if [ -z ${VERSION+x} ]; then \
