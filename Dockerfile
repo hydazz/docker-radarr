@@ -9,7 +9,7 @@ LABEL maintainer="hydaz"
 # environment settings
 ARG BRANCH
 
-RUN \
+RUN set -xe && \
 	echo "**** install build packages ****" && \
 	apk add --no-cache --virtual=build-dependencies \
 		curl \
@@ -26,7 +26,7 @@ RUN \
 		VERSION=$(curl -sL "https://radarr.servarr.com/v1/update/${BRANCH}/changes?os=linuxmusl" | jq -r '.[0].version'); \
 	fi && \
 	mkdir -p /app/radarr/bin && \
-	curl --silent -o \
+	curl -o \
 		/tmp/radarr.tar.gz -L \
 		"https://radarr.servarr.com/v1/update/${BRANCH}/updatefile?version=${VERSION}&os=linuxmusl&runtime=netcore&arch=${ARCH}" && \
 	tar xzf \
