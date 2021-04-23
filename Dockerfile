@@ -22,7 +22,7 @@ RUN set -xe && \
 		exit 1; \
 	fi && \
 	echo "**** install radarr ****" && \
-	if [ -z ${VERSION+x} ]; then \
+	if [ -z ${VERSION} ]; then \
 		VERSION=$(curl -sL "https://radarr.servarr.com/v1/update/${BRANCH}/changes?os=linuxmusl" | jq -r '.[0].version'); \
 	fi && \
 	mkdir -p /app/radarr/bin && \
